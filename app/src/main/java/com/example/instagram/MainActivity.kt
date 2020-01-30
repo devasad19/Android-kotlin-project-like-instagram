@@ -9,10 +9,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.instagram.fragments.HomeFragment
-import com.example.instagram.fragments.NotificationFragment
-import com.example.instagram.fragments.ProfileFragment
-import com.example.instagram.fragments.SearchFragment
+import com.example.instagram.fragments.*
 
 class MainActivity : AppCompatActivity() {
     internal var selectFragment: Fragment? = null
@@ -20,26 +17,25 @@ class MainActivity : AppCompatActivity() {
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener{item ->
         when(item.itemId) {
             R.id.nav_home -> {
-                selectFragment = HomeFragment()
+                moveToFrament(HomeFragment())
+                return@OnNavigationItemSelectedListener true
             }
             R.id.nav_search -> {
-                selectFragment = SearchFragment()
+                moveToFrament(SearchFragment())
+                return@OnNavigationItemSelectedListener true
             }
             R.id.nav_add_post -> {
+                moveToFrament(AddPostFragment())
                 return@OnNavigationItemSelectedListener true
             }
             R.id.nav_notifications -> {
-                selectFragment = NotificationFragment()
+                moveToFrament(NotificationFragment())
+                return@OnNavigationItemSelectedListener true
             }
             R.id.nav_profile -> {
-                selectFragment = ProfileFragment()
+                moveToFrament(ProfileFragment())
+                return@OnNavigationItemSelectedListener true
             }
-        }
-        if(selectFragment != null){
-            supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container,
-                selectFragment!!
-            ).commit()
         }
 
         false
@@ -53,9 +49,13 @@ class MainActivity : AppCompatActivity() {
 
         navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
-        supportFragmentManager.beginTransaction().replace(
-            R.id.fragment_container,
-            HomeFragment()
-        ).commit()
+        moveToFrament(HomeFragment())
     }
+
+    private fun moveToFrament(fragment: Fragment){
+        var fragmentTrans = supportFragmentManager.beginTransaction()
+        fragmentTrans.replace(R.id.fragment_container, fragment)
+        fragmentTrans.commit()
+    }
+
 }
