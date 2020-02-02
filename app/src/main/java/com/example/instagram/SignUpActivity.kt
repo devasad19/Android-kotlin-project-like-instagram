@@ -43,7 +43,7 @@ class SignUpActivity : AppCompatActivity() {
 
             else ->{
                 val progressDialog = ProgressDialog(this)
-                    progressDialog.setMessage("Register Progress")
+                    progressDialog.setMessage("Registration Progress")
                     progressDialog.setCancelable(false)
                     progressDialog.show()
 
@@ -70,10 +70,9 @@ class SignUpActivity : AppCompatActivity() {
 
         val userMap = HashMap<String, Any>()
         userMap["uid"] = currentUserId
-        userMap["fullname"] = currentUserId
-        userMap["username"] = currentUserId
-        userMap["email"] = currentUserId
-        userMap["password"] = currentUserId
+        userMap["fullname"] = fullname.toLowerCase()
+        userMap["username"] = username.toLowerCase()
+        userMap["email"] = email
 
         userMap["bio"] = "Here is sitted my bio about myself."
         userMap["image"] = "https://firebasestorage.googleapis.com/v0/b/kotlin-instagram-app.appspot.com/o/d_Images%2Fprofile.png?alt=media&token=a5833989-cb32-4363-ba7d-c548ce2023a1"

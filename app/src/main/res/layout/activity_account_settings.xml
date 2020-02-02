@@ -83,7 +83,7 @@
     android:orientation="vertical">
 
     <EditText
-        android:id="@+id/profile_full_name"
+        android:id="@+id/profile_sett_full_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Full Name"
@@ -95,7 +95,7 @@
         android:padding="5dp"/>
 
     <EditText
-        android:id="@+id/profile_username"
+        android:id="@+id/profile_sett_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Username"
@@ -108,7 +108,7 @@
         android:padding="5dp"/>
 
     <EditText
-        android:id="@+id/d"
+        android:id="@+id/profile_sett_bio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter your bio"
@@ -136,7 +136,7 @@
         android:layout_alignParentBottom="true"
         >
         <Button
-            android:id="@+id/profiles_bio"
+            android:id="@+id/logout_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="17dp"
@@ -149,7 +149,7 @@
             android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/proffaile_bio"
+            android:id="@+id/create_account_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="17dp"

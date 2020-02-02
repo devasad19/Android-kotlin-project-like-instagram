@@ -39,6 +39,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/inputs_background"
             android:padding="10dp"
+            android:inputType="textPassword"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
