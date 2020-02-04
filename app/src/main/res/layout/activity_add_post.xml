@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddPostActivity">
+
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/account_setting_appbar_layout"
+        android:background="@android:color/white">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/add_post_toolbar"
+            android:background="@android:color/white"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:id="@+id/add_post_close_btn"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/close"/>
+
+                <ImageView
+                    android:id="@+id/add_post_save_btn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/save_edited_info"
+                    android:layout_marginRight="15dp"/>
+
+
+
+            </RelativeLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:layout_below="@+id/account_setting_appbar_layout">
+
+        <ImageView
+            android:id="@+id/post_image_id"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/add_image_icon"
+            android:scaleType="centerCrop"/>
+
+        <EditText
+            android:id="@+id/post_description_id"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="20dp"
+            android:hint="What is on mind??"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:padding="4dp"/>
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

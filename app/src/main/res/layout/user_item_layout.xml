@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@drawable/button_black_background"
+    android:layout_gravity="center_horizontal"
+    >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_profile_picture_id"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/profile"
+            android:padding="5dp"/>
+
+        <TextView
+            android:id="@+id/username_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="user name"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10dp"/>
+
+        <TextView
+            android:id="@+id/user_fullname_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="user full name"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="5dp"
+            android:textStyle="bold"
+            android:textSize="15sp"/>
+
+        <Button
+            android:id="@+id/follow_btn_search"
+            android:layout_width="130dp"
+            android:layout_height="35dp"
+            android:text="Follow"
+            android:textAllCaps="false"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_black_background"/>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>
