@@ -98,6 +98,7 @@ class CommentActivity : AppCompatActivity() {
         commentRef.push().setValue(commentsMap)
 
         comment_input_feild!!.text.clear()
+        Toast.makeText(this, "Your comment added successfully", Toast.LENGTH_LONG).show()
     }
 
 

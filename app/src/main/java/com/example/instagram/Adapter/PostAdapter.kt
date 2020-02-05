@@ -59,10 +59,10 @@ class PostAdapter(private val mContext : Context, private val mPost: List<Post>)
         getPublisherInfo(holder.profileImage, holder.publisher, post.getPublisher())
 
 
+
         // post like operations
         isLikeOfPost(holder.likeButton, post.getPostId())
         getTotalLikes(holder.likes, post.getPostId())
-        getTotalCommets(holder.comments, post.getPostId())
         holder.likeButton.setOnClickListener {
 
             if(holder.likeButton.tag == "Like")
@@ -85,6 +85,8 @@ class PostAdapter(private val mContext : Context, private val mPost: List<Post>)
         }
 
         // comments operations
+        getTotalCommets(holder.comments, post.getPostId())
+
         holder.commentButton.setOnClickListener {
             val intentComment = Intent(mContext, CommentActivity::class.java)
             intentComment.putExtra("postId", post.getPostId())
@@ -93,7 +95,7 @@ class PostAdapter(private val mContext : Context, private val mPost: List<Post>)
 
 
         }
-        // comments-text button operations
+
         holder.comments.setOnClickListener {
             val intentComment = Intent(mContext, CommentActivity::class.java)
             intentComment.putExtra("postId", post.getPostId())
@@ -102,6 +104,28 @@ class PostAdapter(private val mContext : Context, private val mPost: List<Post>)
 
 
         }
+
+        // save post images operation
+        savePostImages(post.getPostId(), holder.saveButton)
+
+        holder.saveButton.setOnClickListener {
+            if(holder.saveButton.tag == "Save")
+            {
+                FirebaseDatabase.getInstance().reference
+                    .child("SavePostImages").child(firebaseUser!!.uid)
+                    .child(post.getPostId())
+                    .setValue(true)
+            }
+            else
+            {
+                FirebaseDatabase.getInstance().reference
+                    .child("SavePostImages").child(firebaseUser!!.uid)
+                    .child(post.getPostId())
+                    .removeValue()
+            }
+
+        }
+
     }
 
     private fun getTotalCommets(comments: TextView, postId: String) {
@@ -229,5 +253,29 @@ class PostAdapter(private val mContext : Context, private val mPost: List<Post>)
 
     }
 
+
+    private fun savePostImages(postId: String, postImage: ImageView)
+    {
+        val postRef = FirebaseDatabase.getInstance().reference
+            .child("SavePostImages").child(firebaseUser!!.uid)
+        postRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.child(postId).exists())
+                {
+                    postImage.setImageResource(R.drawable.save_large_icon)
+                    postImage.tag = "Saved"
+                }
+                else
+                {
+                    postImage.setImageResource(R.drawable.save_unfilled_large_icon)
+                    postImage.tag = "Save"
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+        })
+    }
 
 }

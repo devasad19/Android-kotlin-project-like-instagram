@@ -45,8 +45,6 @@ class AccountSettingsActivity : AppCompatActivity() {
         firebaseUser = FirebaseAuth.getInstance().currentUser!!
         storageProfilePicRef = FirebaseStorage.getInstance().reference.child("Profile Images")
 
-        Toast.makeText(this, "file create hoy na ken", Toast.LENGTH_LONG).show()
-
         logout_btn.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(this@AccountSettingsActivity , SignInActivity::class.java)
@@ -67,12 +65,10 @@ class AccountSettingsActivity : AppCompatActivity() {
          }
 
         save_profile_setting_btn.setOnClickListener {
-            Toast.makeText(this, "out of image and text update method", Toast.LENGTH_LONG).show()
 
             if(checker == "clicked")
             {
                 profileImageAndTextUpdate()
-                Toast.makeText(this, "in image and text update method", Toast.LENGTH_LONG).show()
 
             }
             else

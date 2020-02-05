@@ -8,7 +8,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ImageButton
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.instagram.AccountSettingsActivity
+import com.example.instagram.Adapter.ImageViewAdapter
+import com.example.instagram.Model.Post
 import com.example.instagram.Model.User
 
 import com.example.instagram.R
@@ -18,9 +25,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -29,14 +39,72 @@ class ProfileFragment : Fragment() {
     private lateinit var profileId :String
     private lateinit var firebaseUser: FirebaseUser
 
+    var postList: List<Post>? = null
+     var imageAdapter: ImageViewAdapter? = null
+
+     var saveImageAdapter: ImageViewAdapter? = null
+    var saveImageList: List<Post>? = null
+    var mySaveImages: List<String>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         var view= inflater.inflate(R.layout.fragment_profile, container, false)
-
         firebaseUser = FirebaseAuth.getInstance().currentUser!!
+
+
+        // show post images in profile fragment
+        var recyclerViewUploadImage: RecyclerView
+        recyclerViewUploadImage = view.findViewById(R.id.uploaded_post_recyclerview_images)
+        recyclerViewUploadImage.setHasFixedSize(true)
+
+        val linearLayoutManager: LinearLayoutManager = GridLayoutManager(context, 3)
+        recyclerViewUploadImage.layoutManager = linearLayoutManager
+
+        postList = ArrayList()
+        imageAdapter = context?.let { ImageViewAdapter(it, postList as ArrayList<Post>) }
+        recyclerViewUploadImage.adapter = imageAdapter
+
+
+
+        // show save images in profile
+        var recyclerViewSaveImages :RecyclerView
+        recyclerViewSaveImages = view.findViewById(R.id.saved_post_recyclerview_images)
+        recyclerViewSaveImages.setHasFixedSize(true)
+
+        val linearLayoutManagerSave: LinearLayoutManager = GridLayoutManager(context, 3)
+        recyclerViewSaveImages.layoutManager = linearLayoutManagerSave
+
+        saveImageList = ArrayList()
+        saveImageAdapter = context?.let { ImageViewAdapter(it, saveImageList as ArrayList<Post>) }
+        recyclerViewSaveImages.adapter = saveImageAdapter
+
+
+
+        //default show
+        recyclerViewSaveImages.visibility = View.GONE
+        recyclerViewUploadImage.visibility = View.VISIBLE
+
+
+
+        // toggole show post image and save image
+        var postImageBtn : ImageButton
+        postImageBtn = view.findViewById(R.id.images_grid_view_btn)
+        postImageBtn.setOnClickListener {
+            recyclerViewSaveImages.visibility = View.GONE
+            recyclerViewUploadImage.visibility = View.VISIBLE
+        }
+
+        var saveImageBtn : ImageButton
+        saveImageBtn = view.findViewById(R.id.images_save_btn)
+        saveImageBtn.setOnClickListener {
+            recyclerViewSaveImages.visibility = View.VISIBLE
+            recyclerViewUploadImage.visibility = View.GONE
+        }
+
+        
         val pref = context?.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
         if (pref != null)
         {
@@ -54,6 +122,8 @@ class ProfileFragment : Fragment() {
         }
 
 
+        
+        
         view.edit_profile_btn_id.setOnClickListener {
             val getBtnTxt = view.edit_profile_btn_id.text.toString()
 
@@ -99,11 +169,96 @@ class ProfileFragment : Fragment() {
 
         }
 
-        getFollowers()
-        getFollowing()
-        userInfo()
 
+        getTotalNumbersPosts()
+        getTotalNumbersFollowers()
+        getTotalNumbersFollowing()
+        userInfo()
+        userUploadedImages()
+        getSavePostImages()
         return view
+    }
+
+    private fun getSavePostImages(){
+        mySaveImages = ArrayList()
+
+        val saveImageRef = FirebaseDatabase.getInstance().reference
+            .child("SavePostImages").child(firebaseUser!!.uid)
+
+        saveImageRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.exists())
+                {
+                    for (snapshot in p0.children)
+                    {
+                        (mySaveImages as ArrayList<String>).add(snapshot.key!!)
+                    }
+                    getSaveImageData()
+                }
+
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+        })
+    }
+
+    private fun getSaveImageData(){
+        val posRef = FirebaseDatabase.getInstance().reference
+            .child("Posts")
+        posRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.exists())
+                {
+                    (saveImageList as ArrayList<Post>).clear()
+
+                    for (snapshot in p0.children)
+                    {
+                        val post = snapshot.getValue(Post::class.java)!!
+                        for(key in mySaveImages!!)
+                        {
+                            if(post.getPostId() == key)
+                            {
+                                (saveImageList as ArrayList<Post>).add(post!!)
+                            }
+                        }
+                    }
+                    saveImageAdapter!!.notifyDataSetChanged()
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+        })
+    }
+
+    private fun userUploadedImages(){
+        val userPostsRef = FirebaseDatabase.getInstance().reference.child("Posts")
+
+            userPostsRef.addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(p0: DataSnapshot) {
+                    if(p0.exists())
+                    {
+                        (postList as ArrayList<Post>).clear()
+                        for (snapshot in p0.children)
+                        {
+                            val post = snapshot.getValue(Post::class.java)
+                            if(post!!.getPublisher().equals(profileId))
+                            {
+                                (postList as ArrayList<Post>).add(post)
+                            }
+                            Collections.reverse(postList)
+                            imageAdapter!!.notifyDataSetChanged()
+                        }
+                    }
+                }
+
+                override fun onCancelled(p0: DatabaseError) {
+
+                }
+            })
     }
 
     private fun checkFollowAndFollowingBtnStatus() {
@@ -136,12 +291,38 @@ class ProfileFragment : Fragment() {
 
     }
 
+    private fun getTotalNumbersPosts(){
+        val postRef = FirebaseDatabase.getInstance().reference
+            .child("Posts")
 
-    private fun getFollowers(){
+        postRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.exists())
+                {
+                    var postCount = 0
+                    for (snapshot in p0.children)
+                    {
+                        val post = snapshot.getValue(Post::class.java)!!
+                        if(post.getPublisher() == profileId)
+                        {
+                            postCount ++
+                        }
+                    }
+                        total_post_count.text = " "+ postCount
+
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+        })
+    }
+
+    private fun getTotalNumbersFollowers(){
         val followersRef = FirebaseDatabase.getInstance().reference
                 .child("Follow").child(profileId)
                 .child("Followers")
-
 
         followersRef.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -158,7 +339,7 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun getFollowing(){
+    private fun getTotalNumbersFollowing(){
         val followingRef = FirebaseDatabase.getInstance().reference
                 .child("Follow").child(profileId)
                 .child("Following")
@@ -193,10 +374,7 @@ class ProfileFragment : Fragment() {
                     view?.profile_bio_fragment?.text = user!!.getBio()
                 }
 
-//                if(context != null)
-//                {
-//                    return
-//                }
+
             }
 
             override fun onCancelled(snapshot: DatabaseError) {
@@ -229,4 +407,6 @@ class ProfileFragment : Fragment() {
         preference?.putString("profileId", firebaseUser.uid)
         preference?.apply()
     }
+
+
 }
